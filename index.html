@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include FontAwesome for the icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-...">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="main.js"></script>
+    <title>Your Grocery Store</title>
+</head>
+
+<body>
+    <header>
+        <div class="header-left">
+            <h1>Your Grocery Store</h1>
+        </div>
+        <div class="header-right">
+            <!-- Fix the home button -->
+            <button onclick="goToHomePage()">
+                <i class="fas fa-home"></i> Home
+            </button>
+            <!-- Updated filter button to open side panel -->
+            <button id="filterButton">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+            <button onclick="showCartPage()">Cart</button>
+        </div>
+    </header>
+    <div id="content"></div>
+</body>
+
+</html>
