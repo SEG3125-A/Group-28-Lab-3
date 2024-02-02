@@ -11,6 +11,14 @@ const products = [
     { name: "Salmon", price: 6.0, vegetarian: false, glutenFree: true, preference: 'organic' }
 ];
 
+const categories = {
+    milk: ['Milk'],
+    meats: ['Chicken', 'Salmon', 'Eggs'],
+    fruits: ['Bananas', 'Tomatoes', 'Apples'],
+    breads: ['Bread', 'Rice', 'Cereal'],
+    // ... add more categories as needed
+};
+
 let userPreferences = {
     vegetarian: false,
     glutenFree: false,
@@ -19,21 +27,35 @@ let userPreferences = {
 
 let cartItems = [];
 
-// Function to display products page with a filter button
 function showProductsPage() {
     const content = document.getElementById('content');
     const filterButton = document.getElementById('filterButton');
 
-    content.innerHTML = `
-        <h2>Products Page</h2>
-        <ul>
-            ${products.map(product => `
-                <li>${product.name} - $${product.price}
-                    <button onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
-                </li>`).join('')}
-        </ul>
+    // If a category is selected, show products for that category
+    if (userPreferences.category) {
+        const categoryProducts = products.filter(product => categories[userPreferences.category].includes(product.name));
+        displayProducts(content, categoryProducts);
+    } else {
+        // Show categories initially
+        displayCategories(content);
+    }
+
+    filterButton.removeEventListener('click', toggleFilters);
+    filterButton.addEventListener('click', toggleFilters);
+}
+
+function displayCategories(container) {
+    container.innerHTML = `
+        <h2>Categories</h2>
+        <div class="category-container">
+            ${Object.keys(categories).map(category => `
+                <div class="category-item">
+                    <img src="${category}.png" alt="${category}" width="200" height="200">
+                    <div>${category.charAt(0).toUpperCase() + category.slice(1)}</div>
+                    <button onclick="selectCategory('${category}')">Enter</button>
+                </div>`).join('')}
+        </div>
         <div id="filterSidePanel">
-            <!-- New section for customer preferences -->
             <h3>Customer Preferences</h3>
             <label><input type="checkbox" id="vegetarian"> Vegetarian</label>
             <label><input type="checkbox" id="glutenFree"> Gluten-Free</label>
@@ -43,37 +65,57 @@ function showProductsPage() {
                     <option value="non-organic">Non-organic</option>
                 </select>
             </label>
-            <!-- Apply Filters button -->
             <button onclick="applyFilters()">Apply Filters</button>
         </div>
     `;
-
-    // Updated event listener for the filter button in the header
-    filterButton.removeEventListener('click', toggleFilters);
-    filterButton.addEventListener('click', toggleFilters);
 }
 
-// Function to toggle the filter side panel
+function displayProducts(container, productList) {
+    container.innerHTML = `
+        <h2>${userPreferences.category.charAt(0).toUpperCase() + userPreferences.category.slice(1)} Products</h2>
+        <div class="product-container">
+            ${productList.map(product => `
+                <div class="product-item">
+                    <img src="${product.name}.png" alt="${product.name}" width="50" height="50">
+                    <div>${product.name} - $${product.price}</div>
+                    <button onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
+                </div>`).join('')}
+        </div>
+        <div id="filterSidePanel">
+            <h3>Customer Preferences</h3>
+            <label><input type="checkbox" id="vegetarian"> Vegetarian</label>
+            <label><input type="checkbox" id="glutenFree"> Gluten-Free</label>
+            <label>Preference: 
+                <select id="preference">
+                    <option value="organic">Organic</option>
+                    <option value="non-organic">Non-organic</option>
+                </select>
+            </label>
+            <button onclick="applyFilters()">Apply Filters</button>
+        </div>
+    `;
+}
+
+function selectCategory(category) {
+    userPreferences.category = category;
+    showProductsPage();
+}
+
 function toggleFilters() {
     const sidePanel = document.getElementById('filterSidePanel');
     
-    // Check if the side panel element exists before attempting to modify its style
     if (sidePanel) {
         sidePanel.style.width = sidePanel.style.width === '250px' ? '0' : '250px';
     }
 }
 
-
-// Function to navigate to the home page (Products Page)
 function goToHomePage() {
+    userPreferences.category = null; // Reset selected category to null
     showProductsPage();
 }
 
-
-// Function to display cart page
 function showCartPage() {
     const content = document.getElementById('content');
-    // Display cart items with remove buttons
     const cartContent = cartItems.map(item => `
         <li>${item.name} - $${item.price}
             <button onclick="removeFromCart('${item.name}')">Remove</button>
@@ -88,7 +130,6 @@ function showCartPage() {
     `;
 }
 
-// Function to apply filters on Products Page
 function applyFilters() {
     const vegetarianFilter = document.getElementById('vegetarian').checked;
     const glutenFreeFilter = document.getElementById('glutenFree').checked;
@@ -98,7 +139,6 @@ function applyFilters() {
     userPreferences.glutenFree = glutenFreeFilter;
     userPreferences.preference = preferenceFilter;
 
-    // Filter products based on user preferences
     const filteredProducts = products.filter(product => {
         return (
             (userPreferences.vegetarian ? product.vegetarian : true) &&
@@ -107,30 +147,28 @@ function applyFilters() {
         );
     });
 
-    // Update the displayed products
     const content = document.getElementById('content');
     content.innerHTML = `
         <h2>Products Page</h2>
-        <ul>
+        <div class="product-container">
             ${filteredProducts.map(product => `
-                <li>${product.name} - $${product.price}
+                <div class="product-item">
+                    <img src="${product.name}.png" alt="${product.name}" width="50" height="50">
+                    <div>${product.name} - $${product.price}</div>
                     <button onclick="addToCart('${product.name}', ${product.price})">Add to Cart</button>
-                </li>`).join('')}
-        </ul>
+                </div>`).join('')}
+        </div>
     `;
 }
 
-// Function to add an item to the cart
 function addToCart(name, price) {
     cartItems.push({ name, price });
-    showProductsPage(); // Refresh Products Page to reflect the updated cart
+    showProductsPage();
 }
 
-// Function to remove an item from the cart
 function removeFromCart(name) {
     cartItems = cartItems.filter(item => item.name !== name);
-    showCartPage(); // Refresh Cart Page to reflect the updated cart
+    showCartPage();
 }
 
-// Initial load - show products page by default
 showProductsPage();

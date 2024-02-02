@@ -46,3 +46,45 @@ header {
 #filterSidePanel h3 {
     margin-top: 0; /* Remove top margin on h3 */
 }
+
+#content {
+    max-width: 1200px; /* Optional: Set a max-width for the content */
+    margin: 0 auto; /* Optional: Center the content horizontally */
+}
+
+.product-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.product-item {
+    width: calc(33.33% - 20px); /* Three items per row with 20px gap */
+    box-sizing: border-box;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.product-item img {
+    display: block;
+    margin: 0 auto 10px;
+}
+.category-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.category-item {
+    width: calc(25% - 20px); /* Four items per row with 20px gap */
+    box-sizing: border-box;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.category-item img {
+    display: block;
+    margin: 0 auto 10px;
+    width: 200px; /* Set the width of the images */
+    height: 200px; /* Set the height of the images */
+}
